@@ -11,7 +11,7 @@ namespace ShopDecoyTeleport
         public override string ModuleName => "[SHOP] Decoy Teleport";
         public override string ModuleDescription => "";
         public override string ModuleAuthor => "E!N";
-        public override string ModuleVersion => "v1.0.0";
+        public override string ModuleVersion => "v1.0.1";
 
         private IShopApi? SHOP_API;
         private const string CategoryName = "DecoyTp";
@@ -84,7 +84,7 @@ namespace ShopDecoyTeleport
             RegisterEventHandler<EventDecoyFiring>(EventDecoyFiring);
         }
 
-        public void OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName,
+        public HookResult OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName,
             int buyPrice, int sellPrice, int duration, int count)
         {
             if (TryGetTeleportsPerRound(uniqueName, out int teleportsPerRound))
@@ -96,9 +96,10 @@ namespace ShopDecoyTeleport
             {
                 Logger.LogError($"{uniqueName} has invalid or missing 'teleportsperround' in config!");
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
+        public HookResult OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
         {
             if (state == 1 && TryGetTeleportsPerRound(uniqueName, out int teleportsPerRound))
             {
@@ -109,12 +110,15 @@ namespace ShopDecoyTeleport
             {
                 OnClientSellItem(player, itemId, uniqueName, 0);
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
+        public HookResult OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
         {
             playerDecoyTeleports[player.Slot].TeleportsPerRound = 0;
             playerDecoyTeleports[player.Slot].ItemId = 0;
+
+            return HookResult.Continue;
         }
 
         private HookResult EventDecoyFiring(EventDecoyFiring @event, GameEventInfo info)
