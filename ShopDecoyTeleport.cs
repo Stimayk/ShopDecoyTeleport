@@ -41,7 +41,7 @@ namespace ShopDecoyTeleport
         {
             if (JsonDecoyTeleport == null || SHOP_API == null) return;
 
-            SHOP_API.CreateCategory(CategoryName, "Телепорт на декой");
+            SHOP_API.CreateCategory(CategoryName, "РўРµР»РµРїРѕСЂС‚ РЅР° РґРµРєРѕР№");
 
             foreach (var item in JsonDecoyTeleport.Properties().Where(p => p.Value is JObject))
             {
